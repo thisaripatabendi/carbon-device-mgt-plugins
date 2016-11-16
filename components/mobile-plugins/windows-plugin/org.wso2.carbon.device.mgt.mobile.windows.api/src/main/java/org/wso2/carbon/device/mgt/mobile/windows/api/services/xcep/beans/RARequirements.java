@@ -58,6 +58,7 @@ public class RARequirements {
 	@XmlElement(name = "rAPolicies", required = true, nillable = true)
 	protected OIDReferenceCollection raPolicies;
 
+
 	/**
 	 * Gets the value of the raSignatures property.
 	 */

@@ -54,6 +54,7 @@ public class Revision {
 	@XmlSchemaType(name = "unsignedInt")
 	protected long minorRevision;
 
+
 	/**
 	 * Gets the value of the majorRevision property.
 	 */

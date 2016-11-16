@@ -59,7 +59,8 @@ public class OperationHandler {
      * @param deviceIdentifier specific device identifier for each device.
      * @throws OperationManagementException
      */
-    public void updateDeviceOperations(StatusTag status, SyncmlDocument syncmlDocument,
+    public void
+    updateDeviceOperations(StatusTag status, SyncmlDocument syncmlDocument,
                                        DeviceIdentifier deviceIdentifier) throws OperationManagementException {
         List<? extends Operation> pendingDataOperations;
         try {
@@ -178,7 +179,7 @@ public class OperationHandler {
             throws OperationManagementException {
         List<? extends Operation> pendingDataOperations;
         try {
-            if ((Constants.SyncMLResponseCodes.ACCEPTED.equals(status.getData()))) {
+            if ((Constants.SyncMLResponseCodes.ACCEPTED.equals(status.getData()))) {   //accepted = 200
                 pendingDataOperations = WindowsAPIUtils.getPendingOperations(deviceIdentifier);
                 for (Operation operation : pendingDataOperations) {
                     if ((OperationCode.Command.DEVICE_RING.equals(operation.getCode())) &&
@@ -193,6 +194,7 @@ public class OperationHandler {
             throw new OperationManagementException("Error occurred in getting pending operation.");
         }
     }
+
 
     /***
      * Update the status of the DataWipe operation.
@@ -235,7 +237,7 @@ public class OperationHandler {
 
         List<? extends Operation> pendingOperations;
         DeviceIdentifier deviceIdentifier = convertToDeviceIdentifierObject(
-                syncmlDocument.getHeader().getSource().getLocURI());
+                syncmlDocument.getHeader().getSource().getLocURI());  //passes a string --> URI(path)
         UpdateUriOperations(syncmlDocument);
         generateComplianceFeatureStatus(syncmlDocument);
 
@@ -278,6 +280,10 @@ public class OperationHandler {
         }
         for (StatusTag status : statuses) {
 
+            //test windows 10 --> debug ring
+            /*String statusCommand = status.getCommand();
+            System.out.print(statusCommand);*/
+
             if ((Constants.EXECUTE.equals(status.getCommand()))) {
                 if (status.getTargetReference() == null) {
                     updateDeviceOperations(status, syncmlDocument, deviceIdentifier);
@@ -286,6 +292,10 @@ public class OperationHandler {
                         updateLockOperation(status, syncmlDocument, deviceIdentifier);
                     }
                     if ((OperationCode.Command.DEVICE_RING.equals(status.getTargetReference()))) {
+                        //test windows 10 --> debug ring
+                        /*String pathOfRing = status.getTargetReference();
+                        System.out.print(pathOfRing);*/
+
                         ring(status, syncmlDocument, deviceIdentifier);
                     }
                     if (equals(OperationCode.Command.WIPE_DATA.equals(status.getTargetReference()))) {

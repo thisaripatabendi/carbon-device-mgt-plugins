@@ -176,6 +176,10 @@ public class SyncmlParser {
         List<StatusTag> status = new ArrayList<>();
         NodeList bodyElements = syncBody.getChildNodes();
 
+        //windows 10 - test
+        int count = bodyElements.getLength();
+        System.out.print(count);
+
         for (int i = 0; i < bodyElements.getLength(); i++) {
             Node node = bodyElements.item(i);
 

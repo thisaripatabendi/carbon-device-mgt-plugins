@@ -28,12 +28,16 @@ import java.io.Serializable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RequestSecurityTokenResponse", namespace = PluginConstants.WS_TRUST_TARGET_NAMESPACE,
-        propOrder = {"TokenType", "RequestedSecurityToken", "RequestID"})
+        propOrder = {"TokenType", "DispositionMessage", "RequestedSecurityToken", "RequestID"})
 @SuppressWarnings("unused")
 public class RequestSecurityTokenResponse implements Serializable {
 
     @XmlElement(name = "TokenType", namespace = PluginConstants.WS_TRUST_TARGET_NAMESPACE)
     private String TokenType;
+
+    //new in windows 10
+    @XmlElement(name = "DispositionMessage", namespace = PluginConstants.ENROLLMENT_POLICY_TARGET_NAMESPACE)
+    private String DispositionMessage;
 
     @XmlElement(name = "RequestedSecurityToken", required = true,
             namespace = PluginConstants.WS_TRUST_TARGET_NAMESPACE)
@@ -41,6 +45,7 @@ public class RequestSecurityTokenResponse implements Serializable {
 
     @XmlElement(name = "RequestID", namespace = PluginConstants.ENROLLMENT_POLICY_TARGET_NAMESPACE)
     private int RequestID;
+
 
     public String getTokenType() {
         return TokenType;
@@ -66,4 +71,16 @@ public class RequestSecurityTokenResponse implements Serializable {
     public void setRequestID(int requestID) {
         RequestID = requestID;
     }
+
+    public String getDispositionMessage() {
+        return DispositionMessage;
+    }
+
+    public void setDispositionMessage(String dispositionMessage) {
+        DispositionMessage = dispositionMessage;
+    }
+
+
+
+
 }

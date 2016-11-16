@@ -51,6 +51,7 @@ public class EnrollmentPermission {
 	protected boolean enroll;
 	protected boolean autoEnroll;
 
+
 	/**
 	 * Gets the value of the enroll property.
 	 */

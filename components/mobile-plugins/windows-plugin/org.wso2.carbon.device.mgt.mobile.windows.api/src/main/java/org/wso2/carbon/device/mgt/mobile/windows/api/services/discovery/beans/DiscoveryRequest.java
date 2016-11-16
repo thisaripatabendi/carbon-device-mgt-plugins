@@ -18,15 +18,23 @@
 
 package org.wso2.carbon.device.mgt.mobile.windows.api.services.discovery.beans;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+
+import org.wso2.carbon.device.mgt.mobile.windows.api.common.PluginConstants;
+
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
+import java.util.List;
+
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DiscoveryRequest")
+//@XmlType(name = "DiscoveryRequest")
+@XmlType(name = "DiscoveryRequest", namespace = "http://schemas.microsoft.com/windows/management/2012/01/enrollment")
 @SuppressWarnings("unused")
+
 public class DiscoveryRequest implements Serializable {
 
     @XmlElement(name = "EmailAddress", required = true)
@@ -38,12 +46,44 @@ public class DiscoveryRequest implements Serializable {
     @XmlElement(name = "DeviceType")
     private String deviceType;
 
+    //new in windows 10
+    @XmlElement(name = "ApplicationVersion")
+    private String applicationVersion;
+
+    //new in windows 10
+    @XmlElement(name = "OSEdition")
+    private String osEdition;
+
+    //new in windows 10
+    @XmlElementWrapper(name = "AuthPolicies")
+    @XmlElement(name = "AuthPolicy")
+    private List<String> authPolicies;
+
+    public List<String> getAuthPolicies() {
+        return authPolicies;
+    }
+    public void setAuthPolicies(List<String> authPolicies) {
+        this.authPolicies = authPolicies;
+    }
+
     public String getEmailId() {
         return emailId;
     }
 
     public String getVersion() {
         return version;
+    }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public String getApplicationVersion() {
+        return applicationVersion;
+    }
+
+    public String getOsEdition() {
+        return osEdition;
     }
 
     public void setEmailId(String emailId) {
@@ -54,11 +94,16 @@ public class DiscoveryRequest implements Serializable {
         this.version = version;
     }
 
-    public String getDeviceType() {
-        return deviceType;
-    }
-
     public void setDeviceType(String deviceType) {
         this.deviceType = deviceType;
     }
+
+    public void setApplicationVersion(String applicationVersion) {
+        this.applicationVersion = applicationVersion;
+    }
+
+    public void setOsEdition(String osEdition) {
+        this.osEdition = osEdition;
+    }
+
 }

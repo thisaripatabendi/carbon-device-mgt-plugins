@@ -53,6 +53,7 @@ public class OIDReferenceCollection {
 	@XmlElement(name = "oIDReference", type = Integer.class)
 	protected List<Integer> oidReference;
 
+
 	/**
 	 * Gets the value of the oidReference property.
 	 * <p/>

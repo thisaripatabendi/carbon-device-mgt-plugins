@@ -55,6 +55,7 @@ public class KeyArchivalAttributes {
 	@XmlSchemaType(name = "unsignedInt")
 	protected long symmetricAlgorithmKeyLength;
 
+
 	/**
 	 * Gets the value of the symmetricAlgorithmOIDReference property.
 	 */

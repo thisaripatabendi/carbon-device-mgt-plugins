@@ -47,6 +47,9 @@ public final class PluginConstants {
             "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
     public static final String SOAP_AUTHORIZATION_TARGET_NAMESPACE =
             "http://schemas.xmlsoap.org/ws/2006/12/authorization";
+    /*//new in windows 10
+    public static final String DISPOSITIONMESSAGE_TARGET_NAMESPACE =
+            "http://schemas.microsoft.com/windows/pki/2009/01/enrollment";*/
 
     //Certificate enrollment policy service urls and namespaces
     public static final String ENROLLMENT_POLICY_TARGET_NAMESPACE =
@@ -119,6 +122,9 @@ public final class PluginConstants {
         public static final String PARM = "parm";
         public static final String TYPE = "type";
         public static final String VALUE = "value";
+        //new in windows 10
+        public static final String DISPOSITIONMESSAGE =
+            "http://schemas.microsoft.com/windows/pki/2009/01/enrollment";
         public static final String VALUE_TYPE =
                 "http://schemas.microsoft.com/5.0.0.0/ConfigurationManager/Enrollment/DeviceEnrollmentProvisionDoc";
         public static final String ENCODING_TYPE =
@@ -205,6 +211,23 @@ public final class PluginConstants {
         public static final String MANUFACTURER = "MANUFACTURER";
         public static final String LANGUAGE = "LANGUAGE";
         public static final String RESOLUTION = "RESOLUTION";
+
+        //windows 10 - to get totalRAM
+        public static final String TOTAL_RAM = "TOTAL_RAM";
+        public static final String LOCAL_TIME = "LOCAL_TIME";
+        public static final String MAX_DEPTH = "MAX_DEPTH";
+        public static final String OS_PLATFORM = "OS_PLATFORM";
+        public static final String MOBILE_ID = "MOBILE_ID";
+        public static final String DEVICE_TYPE = "DEVICE_TYPE";
+        public static final String TOTAL_STORAGE = "TOTAL_STORAGE";
+        public static final String BATTERY_QUERY = "BATTERY_QUERY";
+        public static final String BATTERY_STATUS = "BATTERY_STATUS";
+        public static final String BATTERY_CHARGE_REMAINING = "BATTERY_CHARGE_REMAINING";
+        public static final String BATTERY_ESTIMATED_RUNTIME = "BATTERY_ESTIMATED_RUNTIME";
+        public static final String TEST = "TEST";
+        public static final String LONGITUDE = "LONGITUDE";
+        public static final String LATITUDE = "LATITUDE";
+
     }
 
     /**

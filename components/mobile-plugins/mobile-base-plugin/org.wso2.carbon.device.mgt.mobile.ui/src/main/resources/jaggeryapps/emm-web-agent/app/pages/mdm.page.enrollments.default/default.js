@@ -27,6 +27,8 @@ function onRequest(context) {
     var os = parser.getOS();
     var platform = os.name;
 
+    log.warn(platform);
+
     if (platform == "Android") {
         response.sendRedirect(context.app.context + "/enrollments/android/download-agent");
     } else if (platform == "iOS") {
@@ -34,6 +36,23 @@ function onRequest(context) {
     } else if (platform == "Windows Phone") {
         response.sendRedirect(context.app.context + "/enrollments/windows/invoke-agent");
     } else {
+        //response.sendRedirect(context.app.context + "/enrollments/windows/invoke-agent");
         response.sendRedirect(context.app.context + "/enrollments/error/unintentional-request");
     }
+
+    /*if (platform == "Android") {
+        response.sendRedirect(context.app.context + "/enrollments/android/download-agent");
+    } else if (platform == "iOS") {
+        response.sendRedirect(context.app.context + "/enrollments/ios/download-agent");
+    } else if (platform == "Windows Phone") {
+        response.sendRedirect(context.app.context + "/enrollments/windows/invoke-agent");
+    } else if (platform == "ENROLLClient")  {
+        response.sendRedirect(context.app.context + "/enrollments/windowsLap/invoke-agent");
+    } else {
+        //response.sendRedirect(context.app.context + "/enrollments/error/unintentional-request");
+         response.sendRedirect(context.app.context + "/enrollments/windows/invoke-agent");
+    }*/
+
+
 }
+

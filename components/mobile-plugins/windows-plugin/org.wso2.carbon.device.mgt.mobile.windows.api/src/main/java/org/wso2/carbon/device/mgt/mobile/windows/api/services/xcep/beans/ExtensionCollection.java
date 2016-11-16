@@ -53,6 +53,7 @@ public class ExtensionCollection {
 	@XmlElement(required = true)
 	protected List<Extension> extension;
 
+
 	/**
 	 * Instantiate extension list in the constructor
 	 */

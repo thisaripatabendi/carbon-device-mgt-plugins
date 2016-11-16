@@ -35,6 +35,22 @@ public class OperationCode {
         MAC_ADDRESS("./DevDetail/Ext/WLANMACAddress"),
         RESOLUTION("./DevDetail/Ext/Microsoft/Resolution"),
         DEVICE_NAME("./DevDetail/Ext/Microsoft/DeviceName"),
+        //windows 10
+        TOTAL_RAM("./DevDetail/Ext/Microsoft/TotalRAM"),
+        LOCAL_TIME("./DevDetail/Ext/Microsoft/LocalTime"),
+        TOTAL_STORAGE("./DevDetail/Ext/Microsoft/TotalStorage"),
+        MAX_DEPTH("./DevDetail/URI/MaxDepth"),
+        OS_PLATFORM("./DevDetail/Ext/Microsoft/OSPlatform"),
+        MOBILE_ID("./DevDetail/Ext/Microsoft/MobileID"),
+        DEVICE_TYPE("./DevDetail/DevTyp"),
+        BATTERY_QUERY("./Vendor/MSFT/DeviceStatus/Battery"),
+        BATTERY_STATUS("./Vendor/MSFT/DeviceStatus/Battery/Status"),
+        BATTERY_CHARGE_REMAINING("./Vendor/MSFT/DeviceStatus/Battery/EstimatedChargeRemaining"),
+        BATTERY_ESTIMATED_RUNTIME("./Vendor/MSFT/DeviceStatus/Battery/EstimatedRuntime"),
+        TEST("./Vendor/MSFT/DiagnosticLog/EtwLog/Collectors"),
+        LATITUDE("./Vendor/MSFT/RemoteFind/Location/Latitude"),
+        LONGITUDE("./Vendor/MSFT/RemoteFind/Location/Longitude"),
+
         CHANNEL_URI("./Vendor/MSFT/DMClient/Provider/MobiCDMServer/Push/ChannelURI"),
         LOCK_PIN("./Vendor/MSFT/RemoteLock/NewPINValue"),
         LOCK_RESET("./Vendor/MSFT/RemoteLock/LockAndResetPIN"),
@@ -42,9 +58,8 @@ public class OperationCode {
         CAMERA_STATUS("./Vendor/MSFT/PolicyManager/Device/Camera/AllowCamera"),
         ENCRYPT_STORAGE_STATUS("./Vendor/MSFT/PolicyManager/Device/Security/RequireDeviceEncryption"),
         DEVICE_PASSWORD_STATUS("./Vendor/MSFT/PolicyManager/Device/DeviceLock/DevicePasswordEnabled"),
-        DEVICE_PASSCODE_DELETE("./Vendor/MSFT/PolicyManager/My/DeviceLock"),
-        LONGITUDE("./Vendor/MSFT/RemoteFind/Location/Longitude"),
-        LATITUDE("./Vendor/MSFT/RemoteFind/Location/Latitude");
+        DEVICE_PASSCODE_DELETE("./Vendor/MSFT/PolicyManager/My/DeviceLock");
+
 
         private final String code;
 

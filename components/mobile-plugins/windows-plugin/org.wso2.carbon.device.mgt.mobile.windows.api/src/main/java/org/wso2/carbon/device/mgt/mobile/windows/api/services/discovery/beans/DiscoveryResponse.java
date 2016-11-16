@@ -32,6 +32,10 @@ public class DiscoveryResponse implements Serializable {
     @XmlElement(name = "AuthPolicy")
     private String authPolicy;
 
+    //new in windows 10
+    @XmlElement(name = "EnrollmentVersion")
+    private String enrollmentVersion;
+
     @XmlElement(name = "EnrollmentPolicyServiceUrl")
     private String enrollmentPolicyServiceUrl;
 
@@ -41,16 +45,12 @@ public class DiscoveryResponse implements Serializable {
     @XmlElement(name = "AuthenticationServiceUrl")
     private String authenticationServiceUrl;
 
-    public void setAuthenticationServiceUrl(String authenticationServiceUrl) {
-        this.authenticationServiceUrl = authenticationServiceUrl;
-    }
-
-    public String getAuthenticationServiceUrl() {
-        return authenticationServiceUrl;
-    }
-
     public String getAuthPolicy() {
         return authPolicy;
+    }
+
+    public String getEnrollmentVersion() {
+        return enrollmentVersion;
     }
 
     public String getEnrollmentPolicyServiceUrl() {
@@ -61,8 +61,16 @@ public class DiscoveryResponse implements Serializable {
         return enrollmentServiceUrl;
     }
 
+    public String getAuthenticationServiceUrl() {
+        return authenticationServiceUrl;
+    }
+
     public void setAuthPolicy(String authPolicy) {
         this.authPolicy = authPolicy;
+    }
+
+    public void setEnrollmentVersion(String enrollmentVersion) {
+        this.enrollmentVersion = enrollmentVersion;
     }
 
     public void setEnrollmentPolicyServiceUrl(String enrollmentPolicyServiceUrl) {
@@ -71,6 +79,10 @@ public class DiscoveryResponse implements Serializable {
 
     public void setEnrollmentServiceUrl(String enrollmentServiceUrl) {
         this.enrollmentServiceUrl = enrollmentServiceUrl;
+    }
+
+    public void setAuthenticationServiceUrl(String authenticationServiceUrl) {
+        this.authenticationServiceUrl = authenticationServiceUrl;
     }
 
 }

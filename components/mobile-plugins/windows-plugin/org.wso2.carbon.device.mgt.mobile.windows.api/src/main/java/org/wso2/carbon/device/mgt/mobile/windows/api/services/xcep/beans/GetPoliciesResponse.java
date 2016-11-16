@@ -59,6 +59,7 @@ public class GetPoliciesResponse {
 	@XmlElement(name = "oIDs", required = true, nillable = true)
 	protected OIDCollection oiDs;
 
+
 	/**
 	 * Gets the value of the response property.
 	 *

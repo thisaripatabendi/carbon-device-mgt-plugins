@@ -42,10 +42,7 @@ import org.wso2.carbon.device.mgt.mobile.windows.api.common.util.DeviceUtil;
 import org.wso2.carbon.device.mgt.mobile.windows.api.common.util.WindowsAPIUtils;
 import org.wso2.carbon.device.mgt.mobile.windows.api.operations.util.SyncmlCredentialUtil;
 import org.wso2.carbon.device.mgt.mobile.windows.api.services.wstep.CertificateEnrollmentService;
-import org.wso2.carbon.device.mgt.mobile.windows.api.services.wstep.beans.AdditionalContext;
-import org.wso2.carbon.device.mgt.mobile.windows.api.services.wstep.beans.BinarySecurityToken;
-import org.wso2.carbon.device.mgt.mobile.windows.api.services.wstep.beans.RequestSecurityTokenResponse;
-import org.wso2.carbon.device.mgt.mobile.windows.api.services.wstep.beans.RequestedSecurityToken;
+import org.wso2.carbon.device.mgt.mobile.windows.api.services.wstep.beans.*;
 import org.xml.sax.SAXException;
 
 import javax.annotation.Resource;
@@ -80,6 +77,7 @@ import java.util.List;
         targetNamespace = PluginConstants.DEVICE_ENROLLMENT_SERVICE_TARGET_NAMESPACE)
 @Addressing(enabled = true, required = true)
 @BindingType(value = SOAPBinding.SOAP12HTTP_BINDING)
+
 public class CertificateEnrollmentServiceImpl implements CertificateEnrollmentService {
     private static Log log = LogFactory.getLog(
             org.wso2.carbon.device.mgt.mobile.windows.api.services.wstep.impl.CertificateEnrollmentServiceImpl.class);
@@ -111,11 +109,12 @@ public class CertificateEnrollmentServiceImpl implements CertificateEnrollmentSe
         String headerTo = null;
         String encodedWap;
         List<Header> headers = getHeaders();
+
         for (Header headerElement : headers != null ? headers : null) {
             String nodeName = headerElement.getName().getLocalPart();
             if (PluginConstants.SECURITY.equals(nodeName)) {
                 Element element = (Element) headerElement.getObject();
-                headerBinarySecurityToken = element.getFirstChild().getNextSibling().getFirstChild().getTextContent();
+                headerBinarySecurityToken = element.getFirstChild().getFirstChild().getTextContent();   //read CSR
             }
             if (PluginConstants.TO.equals(nodeName)) {
                 Element toElement = (Element) headerElement.getObject();
@@ -128,6 +127,7 @@ public class CertificateEnrollmentServiceImpl implements CertificateEnrollmentSe
 
         String[] splitDomain = email.split("(EnterpriseEnrollment.)");
         domain = splitDomain[PluginConstants.CertificateEnrolment.DOMAIN_SEGMENT];
+        // provisioningURL --> https://EnterpriseEnrollment.prod.wso2.com/Syncml/initialquery
         provisioningURL = PluginConstants.CertificateEnrolment.ENROLL_SUBDOMAIN + domain +
                           PluginConstants.CertificateEnrolment.SYNCML_PROVISIONING_SERVICE_URL;
 
@@ -158,6 +158,9 @@ public class CertificateEnrollmentServiceImpl implements CertificateEnrollmentSe
             RequestSecurityTokenResponse requestSecurityTokenResponse = new RequestSecurityTokenResponse();
             requestSecurityTokenResponse.setTokenType(PluginConstants.CertificateEnrolment.TOKEN_TYPE);
 
+            //new in windows 10 - no value given
+            requestSecurityTokenResponse.setDispositionMessage(null);
+
             encodedWap = prepareWapProvisioningXML(binarySecurityToken, wapProvisioningFilePath,
                     headerBinarySecurityToken);
             RequestedSecurityToken requestedSecurityToken = new RequestedSecurityToken();
@@ -168,6 +171,9 @@ public class CertificateEnrollmentServiceImpl implements CertificateEnrollmentSe
             requestedSecurityToken.setBinarySecurityToken(binarySecToken);
             requestSecurityTokenResponse.setRequestedSecurityToken(requestedSecurityToken);
             requestSecurityTokenResponse.setRequestID(PluginConstants.CertificateEnrolment.REQUEST_ID);
+
+
+
             response.value = requestSecurityTokenResponse;
         } catch (CertificateGenerationException e) {
             String msg = "Problem occurred while generating certificate.";
@@ -213,6 +219,8 @@ public class CertificateEnrollmentServiceImpl implements CertificateEnrollmentSe
      * @throws CertificateGenerationException
      * @throws org.wso2.carbon.device.mgt.mobile.windows.api.common.exceptions.WAPProvisioningException
      */
+
+    //set values in wapProvisioningFile
     private String prepareWapProvisioningXML(String binarySecurityToken, String wapProvisioningFilePath,
                                              String headerBst) throws CertificateGenerationException,
                                                                       WAPProvisioningException,
@@ -293,6 +301,7 @@ public class CertificateEnrollmentServiceImpl implements CertificateEnrollmentSe
             Node userNameAuthPosition = wapParm.item(PluginConstants.CertificateEnrolment.APPAUTH_USERNAME_POSITION);
             NamedNodeMap appServerAttribute = userNameAuthPosition.getAttributes();
             Node authNameNode = appServerAttribute.getNamedItem(PluginConstants.CertificateEnrolment.VALUE);
+            // cecurity token from the cache entry
             CacheEntry cacheEntry = (CacheEntry) DeviceUtil.getCacheEntry(headerBst);
             String userName = cacheEntry.getUsername();
             authNameNode.setTextContent(cacheEntry.getUsername());

@@ -61,6 +61,7 @@ public class Response {
 
 	@XmlElement(required = true)
 	protected String policyID;
+
 	@XmlElement(required = true, nillable = true)
 	protected String policyFriendlyName;
 	@XmlElement(required = true, type = Long.class, nillable = true)

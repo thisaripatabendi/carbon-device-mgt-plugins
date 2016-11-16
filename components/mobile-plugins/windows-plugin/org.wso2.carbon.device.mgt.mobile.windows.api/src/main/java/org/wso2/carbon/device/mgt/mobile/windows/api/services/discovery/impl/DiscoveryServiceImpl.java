@@ -60,6 +60,9 @@ public class DiscoveryServiceImpl implements DiscoveryService {
      *
      * @param discoveryRequest - Request bean comes via mobile phone
      * @param response         - DiscoveryResponse bean for response
+     *
+     * for windows 10 - added enrollmentVersion
+     *
      */
     @Override
     public void discover(DiscoveryRequest discoveryRequest, Holder<DiscoveryResponse> response)
@@ -69,9 +72,17 @@ public class DiscoveryServiceImpl implements DiscoveryService {
         String[] userDomains = emailId.split(DELIMITER);
         String domain = userDomains[DOMAIN_SEGMENT];
 
+        //windows 10 update
+        //enrollmentVersion in the RequestResponse in the RequestVersion of the RequestResponse
+        String version = discoveryRequest.getVersion();
+
         DiscoveryResponse discoveryResponse = new DiscoveryResponse();
+
         if (FEDERATED.equals(getAuthPolicy())) {
             discoveryResponse.setAuthPolicy(FEDERATED);
+            //windows 10 update
+            discoveryResponse.setEnrollmentVersion(version);
+
             discoveryResponse.setEnrollmentPolicyServiceUrl(PluginConstants.Discovery.DEVICE_ENROLLMENT_SUBDOMAIN +
                                                             domain + PluginConstants.Discovery.
                     CERTIFICATE_ENROLLMENT_POLICY_SERVICE_URL);

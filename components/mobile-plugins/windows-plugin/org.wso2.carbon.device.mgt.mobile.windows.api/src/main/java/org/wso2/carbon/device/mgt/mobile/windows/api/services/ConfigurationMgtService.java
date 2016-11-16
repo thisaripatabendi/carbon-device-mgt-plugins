@@ -44,7 +44,7 @@ import javax.ws.rs.core.Response;
 @Produces({"application/json", "application/xml"})
 @Consumes({"application/json", "application/xml"})
 public interface ConfigurationMgtService {
-    
+
     @GET
     @ApiOperation(
             produces = MediaType.APPLICATION_JSON,

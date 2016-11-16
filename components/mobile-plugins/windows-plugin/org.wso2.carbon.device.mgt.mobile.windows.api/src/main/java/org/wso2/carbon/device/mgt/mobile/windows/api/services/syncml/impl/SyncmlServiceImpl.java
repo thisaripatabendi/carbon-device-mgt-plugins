@@ -18,9 +18,10 @@
 
 package org.wso2.carbon.device.mgt.mobile.windows.api.services.syncml.impl;
 
+import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
+import org.w3c.dom.*;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.device.mgt.common.*;
 import org.wso2.carbon.device.mgt.common.notification.mgt.NotificationManagementException;
@@ -43,10 +44,31 @@ import org.wso2.carbon.policy.mgt.common.PolicyManagementException;
 import org.wso2.carbon.policy.mgt.core.PolicyManagerService;
 
 import javax.ws.rs.core.Response;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import org.xml.sax.InputSource;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.xml.sax.SAXException;
+
+
+import java.io.*;
+import java.util.TimeZone;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.*;
+import javax.xml.transform.stream.*;
 
 import static org.wso2.carbon.device.mgt.mobile.windows.api.common.util.WindowsAPIUtils.convertToDeviceIdentifierObject;
+
 
 /**
  * Implementing class of SyncmlImpl interface.
@@ -107,6 +129,7 @@ public class SyncmlServiceImpl implements SyncmlService {
         return generatedDevice;
     }
 
+
     /**
      * Method for calling SyncML engine for producing the Syncml response. For the first SyncML message comes from
      * the device, this method produces a response to retrieve device information for enrolling the device.
@@ -120,6 +143,7 @@ public class SyncmlServiceImpl implements SyncmlService {
     public Response getResponse(Document request)
             throws WindowsDeviceEnrolmentException, WindowsOperationException, NotificationManagementException,
                    WindowsConfigurationException {
+
         int msgId;
         int sessionId;
         String user;
@@ -131,11 +155,14 @@ public class SyncmlServiceImpl implements SyncmlService {
         OperationHandler operationHandler = new OperationHandler();
         DeviceInfo deviceInfo = new DeviceInfo();
 
+        printXML(request);
+
         try {
             if (SyncmlParser.parseSyncmlPayload(request) != null) {
                 syncmlDocument = SyncmlParser.parseSyncmlPayload(request);
                 SyncmlHeader syncmlHeader = syncmlDocument.getHeader();
                 sessionId = syncmlHeader.getSessionId();
+
                 user = syncmlHeader.getSource().getLocName();
                 DeviceIdentifier deviceIdentifier = convertToDeviceIdentifierObject(syncmlHeader.getSource().
                         getLocURI());
@@ -150,6 +177,10 @@ public class SyncmlServiceImpl implements SyncmlService {
                         if (enrollDevice(request)) {
                             deviceInfoOperations = deviceInfo.getDeviceInfo();
                             response = generateReply(syncmlDocument, deviceInfoOperations);
+                            //windows 10 - test & get time
+                            //getTime();
+                            System.out.println("msgID=1 / scnID=1");
+                            System.out.println(response);
                             return Response.status(Response.Status.OK).entity(response).build();
                         } else {
                             String msg = "Error occurred in device enrollment.";
@@ -164,6 +195,10 @@ public class SyncmlServiceImpl implements SyncmlService {
                 } else if (PluginConstants.SyncML.SYNCML_SECOND_MESSAGE_ID == msgId &&
                            PluginConstants.SyncML.SYNCML_FIRST_SESSION_ID == sessionId) {
                     if (enrollDevice(request)) {
+                        //windows 10 - test
+                        response = generateReply(syncmlDocument, null);
+                        System.out.println("msgID=2 / scnID=2");
+                        System.out.println(response);
                         return Response.ok().entity(generateReply(syncmlDocument, null)).build();
                     } else {
                         String msg = "Error occurred in modify enrollment.";
@@ -173,7 +208,11 @@ public class SyncmlServiceImpl implements SyncmlService {
                 } else if (sessionId >= PluginConstants.SyncML.SYNCML_SECOND_SESSION_ID) {
                     if ((syncmlDocument.getBody().getAlert() != null)) {
                         if (!syncmlDocument.getBody().getAlert().getData().equals(Constants.DISENROLL_ALERT_DATA)) {
-                            pendingOperations = operationHandler.getPendingOperations(syncmlDocument);
+                            pendingOperations = operationHandler.getPendingOperations(syncmlDocument);   //***
+                            //windows 10 - test
+                            response = generateReply(syncmlDocument, pendingOperations);
+                            System.out.println("scnID>2");
+                            System.out.println(response);
                             return Response.ok().entity(generateReply(syncmlDocument, pendingOperations)).build();
                         } else {
                             if (WindowsAPIUtils.getDeviceManagementService().getDevice(deviceIdentifier) != null) {
@@ -214,6 +253,7 @@ public class SyncmlServiceImpl implements SyncmlService {
         }
         return null;
     }
+
 
     /**
      * Enroll phone device
@@ -380,4 +420,50 @@ public class SyncmlServiceImpl implements SyncmlService {
         generator = new SyncmlGenerator();
         return generator.generatePayload(syncmlResponse);
     }
+
+    public void printXML(Document request){
+
+        getTime();
+
+        try
+        {
+            DOMSource domSource = new DOMSource(request);
+            StringWriter writer = new StringWriter();
+            StreamResult result = new StreamResult(writer);
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.transform(domSource, result);
+
+            String check = writer.toString();
+
+            try {
+                //Whatever the file path is.
+                File statText = new File("/home/thisari/Documents/thisaripata/Request.xml");
+                FileOutputStream is = new FileOutputStream(statText);
+                OutputStreamWriter osw = new OutputStreamWriter(is);
+                Writer w = new BufferedWriter(osw);
+                w.write(check);
+                w.close();
+            } catch (IOException e) {
+                System.err.println("Problem writing to the file statsTest.txt");
+            }
+
+            //System.out.print(check);
+        }
+        catch(TransformerException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    //test windows 10
+    public void getTime(){
+        Date now = new Date();
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss Z");
+        System.out.println(df.format(now));
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        System.out.println(df.format(now));
+    }
+
+
 }

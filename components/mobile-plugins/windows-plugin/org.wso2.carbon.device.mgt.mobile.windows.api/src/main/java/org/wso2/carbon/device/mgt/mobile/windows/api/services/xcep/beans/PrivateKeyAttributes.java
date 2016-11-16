@@ -72,6 +72,7 @@ public class PrivateKeyAttributes {
 	@XmlElement(required = true, nillable = true)
 	protected CryptoProviders cryptoProviders;
 
+
 	/**
 	 * Gets the value of the minimalKeyLength property.
 	 */

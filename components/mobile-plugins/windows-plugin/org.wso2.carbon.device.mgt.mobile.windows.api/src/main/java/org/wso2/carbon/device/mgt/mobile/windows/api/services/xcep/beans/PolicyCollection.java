@@ -74,6 +74,7 @@ public class PolicyCollection {
 	 * Objects of the following type(s) are allowed in the list
 	 * {@link CertificateEnrollmentPolicy }
 	 */
+
 	public List<CertificateEnrollmentPolicy> getPolicy() {
 		if (policy == null) {
 			policy = new ArrayList<CertificateEnrollmentPolicy>();

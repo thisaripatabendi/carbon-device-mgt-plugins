@@ -57,6 +57,7 @@ public class Extension {
 	@XmlElement(required = true, nillable = true)
 	protected byte[] value;
 
+
 	/**
 	 * Gets the value of the oidReference property.
 	 */

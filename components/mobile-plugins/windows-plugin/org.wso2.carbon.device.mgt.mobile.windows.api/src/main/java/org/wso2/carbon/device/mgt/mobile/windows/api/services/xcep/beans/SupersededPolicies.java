@@ -53,6 +53,7 @@ public class SupersededPolicies {
 	@XmlElement(required = true)
 	protected List<String> commonName;
 
+
 	/**
 	 * Gets the value of the commonName property.
 	 * <p/>

@@ -32,7 +32,7 @@ public class DeviceInfo {
 
         List<Operation> deviceInfoOperations = new ArrayList<>();
 
-        Operation osVersion = new Operation();
+        /*Operation osVersion = new Operation();
         osVersion.setCode(PluginConstants.SyncML.SOFTWARE_VERSION);
         osVersion.setType(Operation.Type.INFO);
         deviceInfoOperations.add(osVersion);
@@ -40,19 +40,24 @@ public class DeviceInfo {
         Operation imsi = new Operation();
         imsi.setCode(PluginConstants.SyncML.IMSI);
         imsi.setType(Operation.Type.INFO);
-        deviceInfoOperations.add(imsi);
+        deviceInfoOperations.add(imsi);*/
 
-        Operation imei = new Operation();
+        /*Operation imei = new Operation();
         imei.setCode(PluginConstants.SyncML.IMEI);
         imei.setType(Operation.Type.INFO);
-        deviceInfoOperations.add(imei);
+        deviceInfoOperations.add(imei);*/
 
         Operation deviceID = new Operation();
         deviceID.setCode(PluginConstants.SyncML.DEV_ID);
         deviceID.setType(Operation.Type.INFO);
         deviceInfoOperations.add(deviceID);
 
-        Operation manufacturer = new Operation();
+        Operation test = new Operation();
+        test.setCode(PluginConstants.SyncML.LONGITUDE);
+        test.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(test);
+
+        /*Operation manufacturer = new Operation();
         manufacturer.setCode(PluginConstants.SyncML.MANUFACTURER);
         manufacturer.setType(Operation.Type.INFO);
         deviceInfoOperations.add(manufacturer);
@@ -60,24 +65,54 @@ public class DeviceInfo {
         Operation model = new Operation();
         model.setCode(PluginConstants.SyncML.MODEL);
         model.setType(Operation.Type.INFO);
-        deviceInfoOperations.add(model);
+        deviceInfoOperations.add(model);*/
 
-        Operation language = new Operation();
+        /*Operation bat_charge = new Operation();
+        bat_charge.setCode(PluginConstants.SyncML.BATTERY_CHARGE_REMAINING);
+        bat_charge.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(bat_charge);
+
+        Operation bat_runtime = new Operation();
+        bat_runtime.setCode(PluginConstants.SyncML.BATTERY_ESTIMATED_RUNTIME);
+        bat_runtime.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(bat_runtime);*/
+
+        /*Operation language = new Operation();
         language.setCode(PluginConstants.SyncML.LANGUAGE);
         language.setType(Operation.Type.INFO);
-        deviceInfoOperations.add(language);
+        deviceInfoOperations.add(language);*/
 
-        Operation vendor = new Operation();
+        /*Operation vendor = new Operation();
         vendor.setCode(PluginConstants.SyncML.VENDOR);
         vendor.setType(Operation.Type.INFO);
-        deviceInfoOperations.add(vendor);
+        deviceInfoOperations.add(vendor);*/
 
-        Operation macaddress = new Operation();
+        Operation mobileID = new Operation();
+        mobileID.setCode(PluginConstants.SyncML.LATITUDE);
+        mobileID.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(mobileID);
+
+        /*Operation deviceType = new Operation();
+        deviceType.setCode(PluginConstants.SyncML.DEVICE_TYPE);
+        deviceType.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(deviceType);*/
+
+        Operation totalStorage = new Operation();
+        totalStorage.setCode(PluginConstants.SyncML.TOTAL_STORAGE);
+        totalStorage.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(totalStorage);
+
+        /*Operation macaddress = new Operation();
         macaddress.setCode(PluginConstants.SyncML.MAC_ADDRESS);
         macaddress.setType(Operation.Type.INFO);
         deviceInfoOperations.add(macaddress);
 
-        Operation resolution = new Operation();
+        Operation osPlatform = new Operation();
+        osPlatform.setCode(PluginConstants.SyncML.OS_PLATFORM);
+        osPlatform.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(osPlatform);*/
+
+        /*Operation resolution = new Operation();
         resolution.setCode(PluginConstants.SyncML.RESOLUTION);
         resolution.setType(Operation.Type.INFO);
         deviceInfoOperations.add(resolution);
@@ -85,8 +120,31 @@ public class DeviceInfo {
         Operation deviceName = new Operation();
         deviceName.setCode(PluginConstants.SyncML.DEVICE_NAME);
         deviceName.setType(Operation.Type.INFO);
-        deviceInfoOperations.add(deviceName);
+        deviceInfoOperations.add(deviceName);*/
 
+        //new in windows 10
+        // used to get deice statistics - RAM
+        // returns an integer that specifies the total available memory in MB on the device (may be less than total physical memory).
+        Operation totalRAM = new Operation();
+        totalRAM.setCode(PluginConstants.SyncML.TOTAL_RAM);
+        totalRAM.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(totalRAM);
+
+        /*Operation localTime = new Operation();
+        localTime.setCode(PluginConstants.SyncML.LOCAL_TIME);
+        localTime.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(localTime);*/
+
+        /*Operation maxdepth = new Operation();
+        maxdepth.setCode(PluginConstants.SyncML.MAX_DEPTH);
+        maxdepth.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(maxdepth);*/
+
+        /*Operation osVersion = new Operation();
+        osVersion.setCode(PluginConstants.SyncML.SOFTWARE_VERSION);
+        osVersion.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(osVersion);
+*/
         return deviceInfoOperations;
     }
 }

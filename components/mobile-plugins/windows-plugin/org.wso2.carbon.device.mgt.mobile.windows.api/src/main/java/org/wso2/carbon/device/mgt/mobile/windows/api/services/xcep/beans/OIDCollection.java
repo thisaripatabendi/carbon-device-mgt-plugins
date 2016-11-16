@@ -53,6 +53,7 @@ public class OIDCollection {
 	@XmlElement(name = "oID", required = true)
 	protected List<OID> oid;
 
+
 	/**
 	 * Gets the value of the oid property.
 	 * <p/>

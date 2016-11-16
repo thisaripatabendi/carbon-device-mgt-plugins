@@ -53,6 +53,7 @@ public class FilterOIDCollection {
 	@XmlElement(required = true)
 	protected List<String> oid;
 
+
 	/**
 	 * Instantiate oid list in the constructor
 	 */
