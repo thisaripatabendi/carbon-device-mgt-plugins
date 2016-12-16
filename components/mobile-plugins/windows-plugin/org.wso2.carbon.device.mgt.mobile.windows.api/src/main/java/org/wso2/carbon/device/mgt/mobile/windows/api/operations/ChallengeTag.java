@@ -28,6 +28,13 @@ import org.wso2.carbon.device.mgt.mobile.windows.api.operations.util.Constants;
 public class ChallengeTag {
     MetaTag meta;
 
+    //windows 10
+    public ChallengeTag(){
+        this.meta = new MetaTag();
+        meta.setFormat("syncml:auth-basic");
+        meta.setType("b64");
+    }
+
     public MetaTag getMeta() {
         return meta;
     }

@@ -26,7 +26,10 @@ public class Constants {
     public static final String SERVER_SECRET = "dummy";
     public static final String INITIAL_NONCE = "ZHVtbXk=";
     public static final String DISENROLL_ALERT_DATA = "1226";
+    //windows 10
+    public static final String NOT_OPERATION = "1224";
     public static final String INITIAL_ALERT_DATA = "1201";
+    public static final String USER_WITHOUT_CREDENTIALS = "admin";
     public static final int EMPTY = 0;
 
     public static final String SYNCML_ROOT_ELEMENT_NAME = "SyncML";
@@ -82,6 +85,7 @@ public class Constants {
      * SynclML service related constants.
      */
     public final class SyncMLResponseCodes {
+        public static final String CREDENTIALS_MISSING = "407";
         public static final String AUTHENTICATION_ACCEPTED = "212";
         public static final String ACCEPTED = "200";
         public static final String ACCEPTED_FOR_PROCESSING = "202";

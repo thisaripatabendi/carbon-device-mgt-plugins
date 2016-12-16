@@ -29,7 +29,6 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.List;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
 //@XmlType(name = "DiscoveryRequest")
 @XmlType(name = "DiscoveryRequest", namespace = "http://schemas.microsoft.com/windows/management/2012/01/enrollment")

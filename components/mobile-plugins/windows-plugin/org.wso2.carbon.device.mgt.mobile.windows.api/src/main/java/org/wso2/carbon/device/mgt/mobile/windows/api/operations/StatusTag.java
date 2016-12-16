@@ -34,6 +34,7 @@ public class StatusTag {
     String data;
     ChallengeTag challenge;
 
+    //changed in windows 10
     public StatusTag(int commandId, int messageReference, int commandReference, String command,
                      String targetReference, String data) {
         this.commandId = commandId;
@@ -41,8 +42,10 @@ public class StatusTag {
         this.commandReference = commandReference;
         this.command = command;
         this.targetReference = targetReference;
+        this.challenge = new ChallengeTag();
         this.data = data;
     }
+
 
     public StatusTag() {
     }

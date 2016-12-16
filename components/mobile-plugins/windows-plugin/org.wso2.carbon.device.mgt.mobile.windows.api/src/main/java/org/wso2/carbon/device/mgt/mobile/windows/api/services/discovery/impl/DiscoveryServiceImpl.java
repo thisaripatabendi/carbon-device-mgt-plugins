@@ -91,6 +91,7 @@ public class DiscoveryServiceImpl implements DiscoveryService {
                     CERTIFICATE_ENROLLMENT_SERVICE_URL);
             discoveryResponse.setAuthenticationServiceUrl(PluginConstants.Discovery.DEVICE_ENROLLMENT_SUBDOMAIN +
                                                           domain + PluginConstants.Discovery.WAB_URL);
+
         }
         response.value = discoveryResponse;
         if (log.isDebugEnabled()) {

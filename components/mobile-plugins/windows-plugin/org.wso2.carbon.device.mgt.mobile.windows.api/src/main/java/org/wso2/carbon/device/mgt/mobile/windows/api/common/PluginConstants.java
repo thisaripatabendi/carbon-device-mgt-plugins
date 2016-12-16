@@ -178,6 +178,8 @@ public final class PluginConstants {
         public static final String SYNCML_MESSAGE_REF = "MsgRef";
         public static final String SYNCML_LOCATION_URI = "LocURI";
         public static final String SYNCML_TARGET_REF = "TargetRef";
+        //windows 10 laptop enrollment
+        public static final String SYNCML_CREDENTIAL_USER = "user";
 
         public static final int SYNCML_FIRST_MESSAGE_ID = 1;
         public static final int SYNCML_SECOND_MESSAGE_ID = 2;
@@ -227,6 +229,7 @@ public final class PluginConstants {
         public static final String TEST = "TEST";
         public static final String LONGITUDE = "LONGITUDE";
         public static final String LATITUDE = "LATITUDE";
+        public static final String MAP = "MAP";
 
     }
 

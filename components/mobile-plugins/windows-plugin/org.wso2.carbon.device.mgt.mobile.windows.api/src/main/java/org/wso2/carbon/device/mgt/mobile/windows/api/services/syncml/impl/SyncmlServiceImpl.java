@@ -18,10 +18,9 @@
 
 package org.wso2.carbon.device.mgt.mobile.windows.api.services.syncml.impl;
 
-import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.device.mgt.common.*;
 import org.wso2.carbon.device.mgt.common.notification.mgt.NotificationManagementException;
@@ -37,46 +36,43 @@ import org.wso2.carbon.device.mgt.mobile.windows.api.common.util.AuthenticationI
 import org.wso2.carbon.device.mgt.mobile.windows.api.common.util.DeviceUtil;
 import org.wso2.carbon.device.mgt.mobile.windows.api.common.util.WindowsAPIUtils;
 import org.wso2.carbon.device.mgt.mobile.windows.api.services.syncml.SyncmlService;
+import org.wso2.carbon.device.mgt.mobile.windows.api.services.syncml.beans.DeviceStatistics;
+import org.wso2.carbon.device.mgt.mobile.windows.api.services.syncml.beans.GraphingData;
 import org.wso2.carbon.device.mgt.mobile.windows.api.services.syncml.beans.WindowsDevice;
 import org.wso2.carbon.device.mgt.mobile.windows.api.operations.*;
 import org.wso2.carbon.device.mgt.mobile.windows.api.operations.util.*;
 import org.wso2.carbon.policy.mgt.common.PolicyManagementException;
 import org.wso2.carbon.policy.mgt.core.PolicyManagerService;
 
+import javax.swing.*;
 import javax.ws.rs.core.Response;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
-import org.xml.sax.InputSource;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import org.xml.sax.SAXException;
-
 
 import java.io.*;
-import java.util.TimeZone;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 
 import static org.wso2.carbon.device.mgt.mobile.windows.api.common.util.WindowsAPIUtils.convertToDeviceIdentifierObject;
 
-
 /**
  * Implementing class of SyncmlImpl interface.
  */
-public class SyncmlServiceImpl implements SyncmlService {
+public class SyncmlServiceImpl implements SyncmlService{
 
     private static Log log = LogFactory.getLog(
             org.wso2.carbon.device.mgt.mobile.windows.api.services.syncml.impl.SyncmlServiceImpl.class);
+
+    //test graph
+    public static List<DeviceStatistics> getDeviceStatistics() {
+        return deviceStatistics;
+    }
+
+    public static List<DeviceStatistics> deviceStatistics = new ArrayList<>();
+    int count;
 
     /**
      * This method is used to generate and return Device object from the received information at
@@ -129,7 +125,6 @@ public class SyncmlServiceImpl implements SyncmlService {
         return generatedDevice;
     }
 
-
     /**
      * Method for calling SyncML engine for producing the Syncml response. For the first SyncML message comes from
      * the device, this method produces a response to retrieve device information for enrolling the device.
@@ -142,8 +137,7 @@ public class SyncmlServiceImpl implements SyncmlService {
     @Override
     public Response getResponse(Document request)
             throws WindowsDeviceEnrolmentException, WindowsOperationException, NotificationManagementException,
-                   WindowsConfigurationException {
-
+            WindowsConfigurationException {
         int msgId;
         int sessionId;
         String user;
@@ -163,75 +157,174 @@ public class SyncmlServiceImpl implements SyncmlService {
                 SyncmlHeader syncmlHeader = syncmlDocument.getHeader();
                 sessionId = syncmlHeader.getSessionId();
 
-                user = syncmlHeader.getSource().getLocName();
-                DeviceIdentifier deviceIdentifier = convertToDeviceIdentifierObject(syncmlHeader.getSource().
-                        getLocURI());
-                msgId = syncmlHeader.getMsgID();
-                if ((PluginConstants.SyncML.SYNCML_FIRST_MESSAGE_ID == msgId) &&
-                    (PluginConstants.SyncML.SYNCML_FIRST_SESSION_ID == sessionId)) {
-                    token = syncmlHeader.getCredential().getData();
-                    CacheEntry cacheToken = (CacheEntry) DeviceUtil.getCacheEntry(token);
+                //windows 10 --------
+                //check whether the credentials is there in the request header
+                //if not the response body requests the credentials from the device
 
-                    if ((cacheToken.getUsername() != null) && (cacheToken.getUsername().equals(user))) {
+                //if the Request header contains credentials
+                if(syncmlHeader.getCredential()!=null){
+                    System.out.println("Credentials ok");
 
-                        if (enrollDevice(request)) {
-                            deviceInfoOperations = deviceInfo.getDeviceInfo();
-                            response = generateReply(syncmlDocument, deviceInfoOperations);
-                            //windows 10 - test & get time
-                            //getTime();
-                            System.out.println("msgID=1 / scnID=1");
-                            System.out.println(response);
-                            return Response.status(Response.Status.OK).entity(response).build();
-                        } else {
-                            String msg = "Error occurred in device enrollment.";
-                            log.error(msg);
-                            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg).build();
-                        }
-                    } else {
-                        String msg = "Authentication failure due to incorrect credentials.";
-                        log.error(msg);
-                        return Response.status(Response.Status.UNAUTHORIZED).entity(msg).build();
-                    }
-                } else if (PluginConstants.SyncML.SYNCML_SECOND_MESSAGE_ID == msgId &&
-                           PluginConstants.SyncML.SYNCML_FIRST_SESSION_ID == sessionId) {
-                    if (enrollDevice(request)) {
-                        //windows 10 - test
-                        response = generateReply(syncmlDocument, null);
-                        System.out.println("msgID=2 / scnID=2");
-                        System.out.println(response);
-                        return Response.ok().entity(generateReply(syncmlDocument, null)).build();
-                    } else {
-                        String msg = "Error occurred in modify enrollment.";
-                        log.error(msg);
-                        return Response.status(Response.Status.NOT_MODIFIED).entity(msg).build();
-                    }
-                } else if (sessionId >= PluginConstants.SyncML.SYNCML_SECOND_SESSION_ID) {
-                    if ((syncmlDocument.getBody().getAlert() != null)) {
-                        if (!syncmlDocument.getBody().getAlert().getData().equals(Constants.DISENROLL_ALERT_DATA)) {
-                            pendingOperations = operationHandler.getPendingOperations(syncmlDocument);   //***
-                            //windows 10 - test
-                            response = generateReply(syncmlDocument, pendingOperations);
-                            System.out.println("scnID>2");
-                            System.out.println(response);
-                            return Response.ok().entity(generateReply(syncmlDocument, pendingOperations)).build();
-                        } else {
-                            if (WindowsAPIUtils.getDeviceManagementService().getDevice(deviceIdentifier) != null) {
-                                WindowsAPIUtils.getDeviceManagementService().disenrollDevice(deviceIdentifier);
-                                return Response.ok().entity(generateReply(syncmlDocument, null)).build();
+                    user = syncmlHeader.getSource().getLocName();
+                    DeviceIdentifier deviceIdentifier = convertToDeviceIdentifierObject(syncmlHeader.getSource().
+                            getLocURI());
+                    msgId = syncmlHeader.getMsgID();
+                    if ((PluginConstants.SyncML.SYNCML_FIRST_MESSAGE_ID == msgId) &&
+                            (PluginConstants.SyncML.SYNCML_FIRST_SESSION_ID == sessionId)) {
+                        //windows 10
+                        token = syncmlHeader.getCredential().getData();
+                        CacheEntry cacheToken = (CacheEntry) DeviceUtil.getCacheEntry(token);
+
+                        if ((cacheToken.getUsername() != null) && (cacheToken.getUsername().equals(user))) {
+                            if (enrollDevice(request)) {
+                                deviceInfoOperations = deviceInfo.getDeviceInfo();
+                                response = generateReply(syncmlDocument, deviceInfoOperations);
+                                System.out.println(response);
+                                return Response.status(Response.Status.OK).entity(response).build();
                             } else {
-                                String msg = "Enrolled device can not be found in the server.";
+                                String msg = "Error occurred in device enrollment.";
                                 log.error(msg);
-                                return Response.status(Response.Status.NOT_FOUND).entity(msg).build();
+                                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg).build();
                             }
+                        } else {
+                            String msg = "Authentication failure due to incorrect credentials.";
+                            log.error(msg);
+                            return Response.status(Response.Status.UNAUTHORIZED).entity(msg).build();
+                        }
+                    } else if (PluginConstants.SyncML.SYNCML_SECOND_MESSAGE_ID == msgId &&
+                            PluginConstants.SyncML.SYNCML_FIRST_SESSION_ID == sessionId) {
+                        if (enrollDevice(request)) {
+                            response = generateReply(syncmlDocument, null);
+                            System.out.println(response);
+                            return Response.ok().entity(generateReply(syncmlDocument, null)).build();
+                        } else {
+                            String msg = "Error occurred in modify enrollment.";
+                            log.error(msg);
+                            return Response.status(Response.Status.NOT_MODIFIED).entity(msg).build();
+                        }
+                    } else if (sessionId >= PluginConstants.SyncML.SYNCML_SECOND_SESSION_ID) {
+                        if ((syncmlDocument.getBody().getAlert() != null)) {
+                            if (!syncmlDocument.getBody().getAlert().getData().equals(Constants.DISENROLL_ALERT_DATA)) {
+                                pendingOperations = operationHandler.getPendingOperations(syncmlDocument);
+                                return Response.ok().entity(generateReply(syncmlDocument, pendingOperations)).build();
+                            } else {
+                                if (WindowsAPIUtils.getDeviceManagementService().getDevice(deviceIdentifier) != null) {
+                                    WindowsAPIUtils.getDeviceManagementService().disenrollDevice(deviceIdentifier);
+                                    return Response.ok().entity(generateReply(syncmlDocument, null)).build();
+                                } else {
+                                    String msg = "Enrolled device can not be found in the server.";
+                                    log.error(msg);
+                                    return Response.status(Response.Status.NOT_FOUND).entity(msg).build();
+                                }
+                            }
+                        } else {
+                            pendingOperations = operationHandler.getPendingOperations(syncmlDocument);
+                            return Response.ok().entity(generateReply(syncmlDocument, pendingOperations)).build();
                         }
                     } else {
-                        pendingOperations = operationHandler.getPendingOperations(syncmlDocument);
-                        return Response.ok().entity(generateReply(syncmlDocument, pendingOperations)).build();
+                        String msg = "Failure occurred in Device request message.";
+                        log.error(msg);
+                        return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
                     }
-                } else {
-                    String msg = "Failure occurred in Device request message.";
-                    log.error(msg);
-                    return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
+
+                //if the Request body does not contain the credentials
+                //in windows 10 laptop devices the initial Request does not contain credentials
+                }else{
+
+                    System.out.println("No credentials");
+                    user = Constants.USER_WITHOUT_CREDENTIALS;
+                    DeviceIdentifier deviceIdentifier = convertToDeviceIdentifierObject(syncmlHeader.getSource().
+                            getLocURI());
+                    msgId = syncmlHeader.getMsgID();
+
+                    if (PluginConstants.SyncML.SYNCML_FIRST_MESSAGE_ID == msgId) {
+
+                        String username = Constants.USER_WITHOUT_CREDENTIALS;
+
+                        String disenrollOperation = syncmlDocument.getBody().getAlert().getData();
+
+                        if (disenrollOperation.equals(Constants.NOT_OPERATION)) {
+                        //if ((username != null) && (username.equals(user) && (disenrollOperation.equals(Constants.NOT_OPERATION)))) {
+
+                            if (enrollDevice(request)) {
+                                deviceInfoOperations = deviceInfo.getDeviceInfo();
+                                response = generateReply(syncmlDocument, deviceInfoOperations);
+                                //System.out.println("MSGID = 1 -----------------------" + count + "---------------");
+                                //System.out.println(response);
+                                return Response.status(Response.Status.OK).entity(response).build();
+                            } else {
+                                String msg = "Error occurred in device enrollment.";
+                                log.error(msg);
+                                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg).build();
+                            }
+
+                            //Execute the disenroll Operation
+                        } else if (!disenrollOperation.equals(Constants.NOT_OPERATION)){
+                            if (!syncmlDocument.getBody().getAlert().getData().equals(Constants.DISENROLL_ALERT_DATA)) {
+                                pendingOperations = operationHandler.getPendingOperations(syncmlDocument);
+                                return Response.ok().entity(generateReply(syncmlDocument, pendingOperations)).build();
+                            } else {
+                                if (WindowsAPIUtils.getDeviceManagementService().getDevice(deviceIdentifier) != null) {
+                                    WindowsAPIUtils.getDeviceManagementService().disenrollDevice(deviceIdentifier);
+                                    System.out.println("Device disenrolled");
+                                    return Response.ok().entity(generateReply(syncmlDocument, null)).build();
+                                } else {
+                                    String msg = "Enrolled device can not be found in the server.";
+                                    log.error(msg);
+                                    return Response.status(Response.Status.NOT_FOUND).entity(msg).build();
+                                }
+                            }
+
+                        } else {
+                            String msg = "Authentication failure due to incorrect credentials.";
+                            log.error(msg);
+                            return Response.status(Response.Status.UNAUTHORIZED).entity(msg).build();
+                        }
+
+                    } else if (msgId >= PluginConstants.SyncML.SYNCML_SECOND_MESSAGE_ID) {
+
+                            response = generateReply(syncmlDocument, null);
+
+                            if(syncmlHeader.getMsgID() == PluginConstants.SyncML.SYNCML_SECOND_MESSAGE_ID){
+
+                                getValues(syncmlDocument);
+
+                                //print the stored data
+                                int count = 1;
+                                for (DeviceStatistics obj : deviceStatistics){
+                                    System.out.println("----------- OBJECT " + count + "------------------");
+                                    System.out.println("STATUS : " + obj.getBat_status());
+                                    if(obj.getBat_status()==1){
+                                        System.out.println("RUNTIME : Still charging");
+                                    }else{
+                                        System.out.println("RUNTIME : " + obj.getBat_runtime());
+                                    }
+                                    System.out.println("TIME : " + obj.getTime());
+                                    count++;
+                                }
+
+                                System.out.println("-------------------------------------------------------------------------------");
+
+                                //generateGraph();
+                                /*JFrame f = new JFrame();
+                                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                                f.add(new GraphingData());
+                                f.setSize(800,800);
+                                f.setLocation(200,200);
+                                f.setVisible(true);*/
+
+                                //System.out.println(response);
+
+                            }
+
+                            //System.out.println(response);
+                            return Response.ok().entity(generateReply(syncmlDocument, null)).build();
+
+                    } else {
+                        String msg = "Failure occurred in Device request message.";
+                        log.error(msg);
+                        return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
+                    }
                 }
             }
         } catch (SyncmlMessageFormatException e) {
@@ -254,7 +347,6 @@ public class SyncmlServiceImpl implements SyncmlService {
         return null;
     }
 
-
     /**
      * Enroll phone device
      *
@@ -264,7 +356,7 @@ public class SyncmlServiceImpl implements SyncmlService {
      * @throws WindowsOperationException
      */
     private boolean enrollDevice(Document request) throws WindowsDeviceEnrolmentException,
-                                                          WindowsOperationException {
+            WindowsOperationException {
 
         String osVersion;
         String imsi = null;
@@ -294,7 +386,11 @@ public class SyncmlServiceImpl implements SyncmlService {
                 devMod = itemList.get(PluginConstants.SyncML.DEVICE_MODEL_POSITION).getData();
                 modVersion = itemList.get(PluginConstants.SyncML.DEVICE_MOD_VER_POSITION).getData();
                 devLang = itemList.get(PluginConstants.SyncML.DEVICE_LANG_POSITION).getData();
-                user = syncmlDocument.getHeader().getSource().getLocName();
+
+                //windows 10
+                //user = syncmlDocument.getHeader().getSource().getLocName();
+                user = Constants.USER_WITHOUT_CREDENTIALS;
+
                 AuthenticationInfo authenticationInfo = new AuthenticationInfo();
                 authenticationInfo.setUsername(user);
                 WindowsAPIUtils.startTenantFlow(authenticationInfo);
@@ -423,8 +519,6 @@ public class SyncmlServiceImpl implements SyncmlService {
 
     public void printXML(Document request){
 
-        getTime();
-
         try
         {
             DOMSource domSource = new DOMSource(request);
@@ -435,10 +529,13 @@ public class SyncmlServiceImpl implements SyncmlService {
             transformer.transform(domSource, result);
 
             String check = writer.toString();
+            count ++;
 
             try {
                 //Whatever the file path is.
-                File statText = new File("/home/thisari/Documents/thisaripata/Request.xml");
+                String filepath = "/home/thisari/Documents/thisaripata/" + count + "Request.xml";
+                //String filepath = "/home/thisari/Documents/thisaripata/Request.xml";
+                File statText = new File(filepath);
                 FileOutputStream is = new FileOutputStream(statText);
                 OutputStreamWriter osw = new OutputStreamWriter(is);
                 Writer w = new BufferedWriter(osw);
@@ -456,14 +553,48 @@ public class SyncmlServiceImpl implements SyncmlService {
         }
     }
 
-    //test windows 10
-    public void getTime(){
-        Date now = new Date();
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss Z");
-        System.out.println(df.format(now));
-        df.setTimeZone(TimeZone.getTimeZone("UTC"));
-        System.out.println(df.format(now));
-    }
+    public void getValues (SyncmlDocument syncmlDocument){
 
+        List<ItemTag> deviceResults = syncmlDocument.getBody().getResults().getItem();
+
+        for(int i = 0 ; i < deviceResults.size() ; i++){
+            ItemTag currentItem = deviceResults.get(i);
+            String syncmlPath = currentItem.getSource().getLocURI();
+
+            if(syncmlPath.equals("./Vendor/MSFT/DeviceStatus/Battery/Status")){
+                String stringValue_batStatus = currentItem.getData();
+                int valueStatus = Integer.parseInt(stringValue_batStatus);
+                int valueRuntime = 0;
+
+                if(valueStatus == 0){                                //if not plugged into charge
+                    //get the estimated runtime
+                    int next = i+1;
+                    ItemTag estimatedRuntime = deviceResults.get(next);
+                    String stringValue_runtime = estimatedRuntime.getData();
+                    int temp_runtime = Integer.parseInt(stringValue_runtime);
+                    valueRuntime = (temp_runtime * 100)/14400;
+                }
+
+                String time = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+
+                DeviceStatistics storeData = new DeviceStatistics(valueStatus, valueRuntime, time);
+                deviceStatistics.add(storeData);
+
+                //test win 10 graph split
+                for(DeviceStatistics obj : deviceStatistics){
+                    String time2 = obj.getTime();
+
+                    //convert time to int (minuts)
+                    String[] timeSplit = time2.split(":");
+                    int h = 60*(Integer.parseInt(timeSplit[0]));
+                    int m = Integer.parseInt(timeSplit[1]);
+                    int total_minuts = h+m;
+                    /*System.out.println("h : " + timeSplit[0] + " m : " + timeSplit[1]);
+                    System.out.println("h(int) : " + h + " m(int) : " + m);
+                    System.out.println("/////////////////////////////////");*/
+                }
+            }
+        }
+    }
 
 }

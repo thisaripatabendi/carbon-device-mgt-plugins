@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
   ~
@@ -60,9 +61,9 @@
         </characteristic>
         <characteristic type="APPAUTH">
             <parm name="AAUTHLEVEL" value="APPSRV"/>
-            <parm name="AAUTHTYPE" value="DIGEST"/>
-            <parm name="AAUTHNAME" value=""/>
-            <parm name="AAUTHSECRET" value=""/>
+            <parm name="AAUTHTYPE" value="BASIC"/>
+            <parm name="AAUTHNAME" value="dummy"/>
+            <parm name="AAUTHSECRET" value="dummy"/>
             <parm name="AAUTHDATA" value="ZHVtbXk="/>
         </characteristic>
     </characteristic>

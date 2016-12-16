@@ -38,5 +38,10 @@ public class RequestedSecurityToken {
     public void setBinarySecurityToken(BinarySecurityToken binarysecuritytoken) {
         this.binarySecurityToken = binarysecuritytoken;
     }
+
+    public BinarySecurityToken getBinarySecurityToken() {
+        return binarySecurityToken;
+    }
+
 }
 

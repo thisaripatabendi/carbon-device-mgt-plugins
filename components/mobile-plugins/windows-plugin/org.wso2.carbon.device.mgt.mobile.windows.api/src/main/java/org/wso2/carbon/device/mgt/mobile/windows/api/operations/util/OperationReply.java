@@ -90,7 +90,8 @@ public class OperationReply {
         source.setLocURI(sourceHeader.getTarget().getLocURI());
         header.setSource(source);
 
-        CredentialTag cred = new CredentialTag();
+        //windows 10 - check
+        /*CredentialTag cred = new CredentialTag();
         if (sourceHeader.getCredential() == null) {
             MetaTag meta = new MetaTag();
             meta.setFormat(Constants.CRED_FORMAT);
@@ -109,7 +110,7 @@ public class OperationReply {
             }
         }
         cred.setData(SyncmlCredentialUtil.generateCredData(nextNonceValue));
-        header.setCredential(cred);
+        header.setCredential(cred);*/
 
         replySyncmlDocument.setHeader(header);
     }
@@ -135,11 +136,12 @@ public class OperationReply {
         SyncmlBody syncmlBodyReply = new SyncmlBody();
         List<StatusTag> statuses = new ArrayList<>();
         List<StatusTag> sourceStatuses = sourceSyncmlBody.getStatus();
+        //windows 10 --> updated with data = 407 (AUTHENTICATION_ACCEPTED)
         if (sourceStatuses.isEmpty()) {
             headerStatus =
-                    new StatusTag(headerCommandId, sourceHeader.getMsgID(), HEADER_STATUS_ID,
-                            HEADER_COMMAND_TEXT, sourceHeader.getSource().getLocURI(),
-                            String.valueOf(Constants.SyncMLResponseCodes.AUTHENTICATION_ACCEPTED));
+                    new StatusTag(headerCommandId, sourceHeader.getMsgID(), HEADER_STATUS_ID, HEADER_COMMAND_TEXT,
+                            sourceHeader.getSource().getLocURI(),
+                            String.valueOf(Constants.SyncMLResponseCodes.CREDENTIALS_MISSING));
             statuses.add(headerStatus);
         } else {
             for (StatusTag sourceStatus : sourceStatuses) {
@@ -195,6 +197,8 @@ public class OperationReply {
             statuses.add(execStatus);
         }
         syncmlBodyReply.setStatus(statuses);
+        //test windows 10
+        //System.out.println(syncmlBodyReply);
         return syncmlBodyReply;
     }
 

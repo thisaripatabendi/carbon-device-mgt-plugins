@@ -50,6 +50,7 @@ public class OperationCode {
         TEST("./Vendor/MSFT/DiagnosticLog/EtwLog/Collectors"),
         LATITUDE("./Vendor/MSFT/RemoteFind/Location/Latitude"),
         LONGITUDE("./Vendor/MSFT/RemoteFind/Location/Longitude"),
+        MAP("./Vendor/MSFT/Maps/Packages/158ec5ab-ca5b-4daf-8d3f-61f0c232cda5/Status"),
 
         CHANNEL_URI("./Vendor/MSFT/DMClient/Provider/MobiCDMServer/Push/ChannelURI"),
         LOCK_PIN("./Vendor/MSFT/RemoteLock/NewPINValue"),

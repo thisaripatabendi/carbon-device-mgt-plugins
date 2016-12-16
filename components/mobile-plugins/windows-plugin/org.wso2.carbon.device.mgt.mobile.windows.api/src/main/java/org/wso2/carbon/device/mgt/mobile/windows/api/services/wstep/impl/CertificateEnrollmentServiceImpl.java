@@ -62,12 +62,11 @@ import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.soap.Addressing;
 import javax.xml.ws.soap.SOAPBinding;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import org.apache.commons.io.FileUtils;
 
 /**
  * Implementation class of CertificateEnrollmentService interface. This class implements MS-WSTEP
@@ -135,7 +134,7 @@ public class CertificateEnrollmentServiceImpl implements CertificateEnrollmentSe
         try {
             if ((tenantConfigurations = WindowsAPIUtils.getTenantConfigurationData()) != null) {
                 for (ConfigurationEntry configurationEntry : tenantConfigurations) {
-                    if ((PluginConstants.TenantConfigProperties.NOTIFIER_FREQUENCY.equals(
+                    if ((PluginConstants.TenantConfigProperties.NOTIFIER_FREQUENCY.equals(    // notifierFrequency
                             configurationEntry.getName()))) {
                         pollingFrequency = configurationEntry.getValue().toString();
                     } else {
@@ -143,13 +142,14 @@ public class CertificateEnrollmentServiceImpl implements CertificateEnrollmentSe
                     }
                 }
             } else {
-                pollingFrequency = PluginConstants.TenantConfigProperties.DEFAULT_FREQUENCY;
+                pollingFrequency = PluginConstants.TenantConfigProperties.DEFAULT_FREQUENCY;   //8
                 String msg = "Tenant configurations are not initialized yet.";
                 log.error(msg);
             }
             ServletContext ctx = (ServletContext) context.getMessageContext().
                     get(MessageContext.SERVLET_CONTEXT);
             File wapProvisioningFile = (File) ctx.getAttribute(PluginConstants.CONTEXT_WAP_PROVISIONING_FILE);
+
             if (log.isDebugEnabled()) {
                 log.debug("Received CSR from Device:" + binarySecurityToken);
             }
@@ -172,7 +172,13 @@ public class CertificateEnrollmentServiceImpl implements CertificateEnrollmentSe
             requestSecurityTokenResponse.setRequestedSecurityToken(requestedSecurityToken);
             requestSecurityTokenResponse.setRequestID(PluginConstants.CertificateEnrolment.REQUEST_ID);
 
-
+            //test w10
+            /*System.out.println("TOKEN TYPE " + requestSecurityTokenResponse.getTokenType());
+            System.out.println("DISPOSITION MESSAGE " + requestSecurityTokenResponse.getDispositionMessage());
+            System.out.println("REQUEST ID " + requestSecurityTokenResponse.getRequestID());
+            System.out.println("RST - BST - VALUE TYPE " +requestSecurityTokenResponse.getRequestedSecurityToken().getBinarySecurityToken().getValueType());
+            System.out.println("RST - BST - ENCODING TYPE " + requestSecurityTokenResponse.getRequestedSecurityToken().getBinarySecurityToken().getEncodingType());
+            System.out.println("RST - BST - TOKEN " + requestSecurityTokenResponse.getRequestedSecurityToken().getBinarySecurityToken().getToken());*/
 
             response.value = requestSecurityTokenResponse;
         } catch (CertificateGenerationException e) {
@@ -301,7 +307,7 @@ public class CertificateEnrollmentServiceImpl implements CertificateEnrollmentSe
             Node userNameAuthPosition = wapParm.item(PluginConstants.CertificateEnrolment.APPAUTH_USERNAME_POSITION);
             NamedNodeMap appServerAttribute = userNameAuthPosition.getAttributes();
             Node authNameNode = appServerAttribute.getNamedItem(PluginConstants.CertificateEnrolment.VALUE);
-            // cecurity token from the cache entry
+            // security token from the cache entry
             CacheEntry cacheEntry = (CacheEntry) DeviceUtil.getCacheEntry(headerBst);
             String userName = cacheEntry.getUsername();
             authNameNode.setTextContent(cacheEntry.getUsername());
@@ -352,4 +358,29 @@ public class CertificateEnrollmentServiceImpl implements CertificateEnrollmentSe
         Message message = ((WrappedMessageContext) messageContext).getWrappedMessage();
         return CastUtils.cast((List<?>) message.get(Header.HEADER_LIST));
     }
+
+    //check windows 10
+    //check the wap-provisioning file by printing
+    /*public void printXML(File wapProvisioningFile){
+
+        try
+        {
+            String str = FileUtils.readFileToString(new File(String.valueOf(wapProvisioningFile)));
+
+            try {
+                //Whatever the file path is.
+                File statText = new File("/home/thisari/Documents/thisaripata/Wap-provisioning.xml");
+                FileOutputStream is = new FileOutputStream(statText);
+                OutputStreamWriter osw = new OutputStreamWriter(is);
+                Writer w = new BufferedWriter(osw);
+                w.write(str);
+                w.close();
+            } catch (IOException e) {
+                System.err.println("Problem writing to the file statsTest.txt");
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
+
 }
