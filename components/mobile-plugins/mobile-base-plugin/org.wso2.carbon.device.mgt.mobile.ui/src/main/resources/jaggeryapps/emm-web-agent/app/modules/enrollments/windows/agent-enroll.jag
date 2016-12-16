@@ -19,6 +19,7 @@
 
 var log = new Log("/app/modules/enrollments/windows/agent-enroll.jag");
 
+var mdmProps = require("/app/modules/conf-reader/main.js")["conf"];
 var UAParser = require("/app/modules/ua-parser.min.js")["UAParser"];
 var parser = new UAParser();
 var userAgent = request.getHeader("User-Agent");
@@ -27,7 +28,7 @@ parser.getResult();
 var os = parser.getOS();
 var platform = os.name;
 
-if (platform != "Windows Phone") {
+if (platform != "Windows Phone" && platform != "Windows") {
     response.sendRedirect(mdmProps["appContext"] + "enrollments/error/unintentional-request");
 } else if (session.get("lastAccessedPage") != "license-agent") {
     response.sendRedirect(mdmProps["appContext"] + "enrollments/error/unintentional-request");

@@ -16,7 +16,7 @@
                 {{/if}}
             </h1>
             <div class="row no-gutter add-padding-5x add-margin-top-5x" style="border: 1px solid #e4e4e4;">
-                <div class="media">
+                <div class="media" id="device-owner" data-owner="{{deviceView.owner}}">
                     <div class="media-left media-middle asset-image col-xs-2 col-sm-2 col-md-2 col-lg-2">
                         <div class="thumbnail icon"><i class="square-element text fw fw-mobile"></i></div>
                     </div>
@@ -52,13 +52,13 @@
                                         <td class="sorting_1" style="padding:10px 15px; width: 15%;">Status</td>
                                         <td style="padding:10px 15px;">
                                             {{#equal deviceView.status "ACTIVE"}}<span><i
-                                                    class="fw fw-ok icon-success"></i>&nbsp;&nbsp;Active</span>{{/equal}}
+                                                    class="fw fw-ok icon-success"></i>Active</span>{{/equal}}
                                             {{#equal deviceView.status "INACTIVE"}}<span><i
-                                                    class="fw fw-warning icon-warning"></i>&nbsp;&nbsp;Inactive</span>{{/equal}}
+                                                    class="fw fw-warning icon-warning"></i>Inactive</span>{{/equal}}
                                             {{#equal deviceView.status "BLOCKED"}}<span><i
-                                                    class="fw fw-remove icon-danger"></i>&nbsp;&nbsp;Blocked</span>{{/equal}}
+                                                    class="fw fw-remove icon-danger"></i>Blocked</span>{{/equal}}
                                             {{#equal deviceView.status "REMOVED"}}<span><i
-                                                    class="fw fw-delete icon-danger"></i>&nbsp;&nbsp;Removed</span>{{/equal}}
+                                                    class="fw fw-delete icon-danger"></i>Removed</span>{{/equal}}
                                         </td>
                                     </tr>
                                 {{/if}}
@@ -109,14 +109,14 @@
                                 </tbody>
                             </table>
                         {{/defineZone}}
-            {{#if deviceView.isNotRemoved}}
-                        <div style="background: #11375B; color: #fff; padding: 10px; margin-bottom: 5px">
-                            Operations
-                        </div>
-                        <div class="add-margin-top-4x">
-                            {{unit "mdm.unit.device.operation-bar" deviceType=deviceView.deviceType ownership=deviceView.ownership}}
-                        </div>
-            {{/if}}
+                        {{#if deviceView.isNotRemoved}}
+                            <div style="background: #11375B; color: #fff; padding: 10px; margin-bottom: 5px">
+                                Operations
+                            </div>
+                            <div class="add-margin-top-4x">
+                                {{unit "mdm.unit.device.operation-bar" deviceType=deviceView.deviceType ownership=deviceView.ownership}}
+                            </div>
+                        {{/if}}
                     </div>
                 </div>
                 <div class="media tab-responsive">
@@ -141,23 +141,23 @@
                                     <i class="icon fw fw-policy"></i><span class="hidden-sm">Policy Compliance</span>
                                 </a>
                             </li>
-                            {{#if deviceView.isNotWindows}}
-                                <li role="presentation" class="list-group-item">
-                                    <a href="#device_location_tab" role="tab" data-toggle="tab"
-                                       data-lat="{{deviceView.location.latitude}}"
-                                       data-long="{{deviceView.location.longitude}}"
-                                       aria-controls="device_location_tab">
-                                        <i class="icon fw fw-map-location"></i><span
-                                            class="hidden-sm">Device Location</span>
-                                    </a>
-                                </li>
-                                <li role="presentation" class="list-group-item">
-                                    <a href="#installed_applications_tab" role="tab" data-toggle="tab"
-                                       aria-controls="installed_applications_tab">
-                                        <i class="icon fw fw-application"></i><span class="hidden-sm">Installed Applications</span>
-                                    </a>
-                                </li>
-                            {{/if}}
+
+                            <li role="presentation" class="list-group-item">
+                                <a href="#device_location_tab" role="tab" data-toggle="tab"
+                                   data-lat="{{deviceView.location.latitude}}"
+                                   data-long="{{deviceView.location.longitude}}"
+                                   aria-controls="device_location_tab">
+                                    <i class="icon fw fw-map-location"></i><span
+                                        class="hidden-sm">Device Location</span>
+                                </a>
+                            </li>
+                            <li role="presentation" class="list-group-item">
+                                <a href="#installed_applications_tab" role="tab" data-toggle="tab"
+                                   aria-controls="installed_applications_tab">
+                                    <i class="icon fw fw-application"></i><span class="hidden-sm">Installed Applications</span>
+                                </a>
+                            </li>
+
                             {{#if deviceView.isNotRemoved}}
                                 <li role="presentation" class="list-group-item">
                                     <a href="#event_log_tab" role="tab" data-toggle="tab" aria-controls="event_log_tab">
@@ -173,131 +173,129 @@
                                  data-status="{{deviceView.isNotRemoved}}" aria-multiselectable="true">
                                 <div class="arrow-left hidden-xs"></div>
 
-                                {{#if deviceView.isNotWindows}}
-                                    <div class="panel panel-default" role="tabpanel" id="device_details_tab">
-                                        <div class="panel-heading visible-xs collapsed" id="device_details">
-                                            <h4 class="panel-title">
-                                                <a role="button" data-toggle="collapse" data-parent="#tabs"
-                                                   href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                    <i class="fw fw-mobile fw-2x"></i>
-                                                    Device Details
-                                                    <i class="caret-updown fw fw-down"></i>
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div class="panel-heading display-none-xs">Device Details</div>
-                                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
-                                             aria-labelledby="device_details">
-                                            <div class="panel-body ">
-                                                <div class="device-detail-body">
-                                                    <!-- device summary -->
-                                                    {{#equal deviceView.deviceType "windows"}}
-                                                        <div class="message message-info">
-                                                            <h4 class="remove-margin"><i class="icon fw fw-info"></i>Not
-                                                                available yet</h4>
+
+                                <div class="panel panel-default" role="tabpanel" id="device_details_tab">
+                                    <div class="panel-heading visible-xs collapsed" id="device_details">
+                                        <h4 class="panel-title">
+                                            <a role="button" data-toggle="collapse" data-parent="#tabs"
+                                               href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                <i class="fw fw-mobile fw-2x"></i>
+                                                Device Details
+                                                <i class="caret-updown fw fw-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div class="panel-heading display-none-xs">Device Details</div>
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
+                                         aria-labelledby="device_details">
+                                        <div class="panel-body ">
+                                            <div class="device-detail-body">
+                                                <!-- device summary -->
+
+
+                                                {{#if deviceView.deviceInfoAvailable}}
+
+                                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                        <div class="col-md-12">
+                                                            <div class="wr-stats-board-tile">
+                                                                <div class="tile-name">BATTERY</div>
+                                                                <div>
+                                                                    <div class="tile-icon"><i
+                                                                            class="fw fw-battery"></i></div>
+                                                                    <div class="tile-stats">
+                                                                        {{deviceView.BatteryLevel.value}} %
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    {{/equal}}
-                                                    {{#if deviceView.deviceInfoAvailable}}
-                                                        {{#if deviceView.BatteryLevel}}
-                                                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                                                <div class="col-md-12">
-                                                                    <div class="wr-stats-board-tile">
-                                                                        <div class="tile-name">BATTERY</div>
-                                                                        <div>
-                                                                            <div class="tile-icon"><i
-                                                                                    class="fw fw-battery"></i></div>
-                                                                            <div class="tile-stats">
-                                                                                {{deviceView.BatteryLevel.value}} %
-                                                                            </div>
-                                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                        <div class="col-md-12">
+                                                            <div class="wr-stats-board-tile">
+                                                                <div class="tile-name">CPU Usage</div>
+                                                                <div>
+                                                                    <div class="tile-icon"><i class="fw fw-dashboard"></i></div>
+                                                                    <div class="tile-stats">
+                                                                        {{deviceView.cpuUsage.value}} 0%
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        {{/if}}
-                                                            <!--{{#if deviceView.cpuUsage}}-->
-                                                        <!--<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">-->
-                                                        <!--<div class="col-md-12">-->
-                                                        <!--<div class="wr-stats-board-tile">-->
-                                                        <!--<div class="tile-name">CPU Usage</div>-->
-                                                        <!--<div>-->
-                                                        <!--<div class="tile-icon"><i class="fw fw-dashboard"></i></div>-->
-                                                        <!--<div class="tile-stats">-->
-                                                        <!--{{deviceView.cpuUsage.value}} %-->
-                                                        <!--</div>-->
-                                                        <!--</div>-->
-                                                        <!--</div>-->
-                                                        <!--</div>-->
-                                                        <!--</div>-->
-                                                            <!--{{/if}}-->
-                                                        {{#if deviceView.ramUsage}}
-                                                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                                                <div class="col-md-12">
-                                                                    <div class="wr-stats-board-tile">
-                                                                        <div class="tile-name">RAM Usage</div>
-                                                                        <div>
-                                                                            <div class="tile-icon"><i
-                                                                                    class="fw fw-hardware"></i></div>
-                                                                            <div class="tile-stats">
-                                                                                {{deviceView.ramUsage.value}} %
-                                                                            </div>
-                                                                        </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                        <div class="col-md-12">
+                                                            <div class="wr-stats-board-tile">
+                                                                <div class="tile-name">TOTAL RAM</div>
+                                                                <div>
+                                                                    <div class="tile-icon"><i
+                                                                            class="fw fw-hardware"></i></div>
+                                                                    <div class="tile-stats">
+                                                                        {{deviceView.ramUsage.value}} GB
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        {{/if}}
-                                                        {{#if deviceView.internalMemory}}
-                                                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                                                <div class="col-md-12">
-                                                                    <div class="wr-stats-board-tile">
-                                                                        <div class="tile-name">Local Storage</div>
-                                                                        <div>
-                                                                            <div class="tile-icon"><i
-                                                                                    class="fw fw-hdd"></i>
-                                                                            </div>
-                                                                            <div class="tile-stats">
-                                                                                {{deviceView.internalMemory.usage}} %
+                                                        </div>
+                                                    </div>
+
+
+
+
+                                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                        <div class="col-md-12">
+                                                            <div class="wr-stats-board-tile">
+                                                                <div class="tile-name">Local Storage</div>
+                                                                <div>
+                                                                    <div class="tile-icon"><i
+                                                                            class="fw fw-hdd"></i>
+                                                                    </div>
+                                                                    <div class="tile-stats">
+                                                                        {{deviceView.internalMemory.usage}} %
                                                                                 <span class="tile-stats-free">
                                                             TOTAL OF {{deviceView.internalMemory.total}} GB
                                                         </span>
-                                                                            </div>
-                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        {{/if}}
-                                                        {{#if deviceView.externalMemory}}
-                                                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                                                <div class="col-md-12">
-                                                                    <div class="wr-stats-board-tile">
-                                                                        <div class="tile-name">External Storage</div>
-                                                                        <div>
-                                                                            <div class="tile-icon"><i
-                                                                                    class="fw fw-usb-drive"></i></div>
-                                                                            <div class="tile-stats">
-                                                                                {{deviceView.externalMemory.usage}} %
+                                                        </div>
+                                                    </div>
+
+                                                    {{#if deviceView.externalMemory}}
+                                                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                            <div class="col-md-12">
+                                                                <div class="wr-stats-board-tile">
+                                                                    <div class="tile-name">External Storage</div>
+                                                                    <div>
+                                                                        <div class="tile-icon"><i
+                                                                                class="fw fw-usb-drive"></i></div>
+                                                                        <div class="tile-stats">
+                                                                            {{deviceView.externalMemory.usage}} %
                                                                                 <span class="tile-stats-free">
                                                             TOTAL OF {{deviceView.externalMemory.total}} GB
                                                         </span>
-                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        {{/if}}
-                                                    {{else}}
-                                                        <div class="message message-info">
-                                                            <h4 class="remove-margin">
-                                                                <i class="icon fw fw-info"></i>
-                                                                Battery, RAM and Storage related information are not
-                                                                available yet.
-                                                            </h4>
                                                         </div>
                                                     {{/if}}
-                                                </div>
+                                                {{else}}
+                                                    <div class="message message-info">
+                                                        <h4 class="remove-margin">
+                                                            <i class="icon fw fw-info"></i>
+                                                            Battery, RAM and Storage related information are not
+                                                            available yet.
+                                                        </h4>
+                                                    </div>
+                                                {{/if}}
                                             </div>
                                         </div>
                                     </div>
-                                {{/if}}
+                                </div>
+
 
                                 <div class="panel panel-default visible-xs-block" role="tabpanel"
                                      id="policy_compliance_tab">
@@ -314,7 +312,7 @@
                                     </div>
                                     <div class="panel-heading display-none-xs">
                                         Policy Compliance
-                                        &nbsp;&nbsp;
+
                                         <span>
                             <a href="javascript:void(0);" id="refresh-policy">
                                 <i class="fw fw-refresh"></i>
@@ -331,7 +329,7 @@
                             </span>
                                             <div id="policy-spinner"
                                                  class="wr-advance-operations-init add-padding-bottom-2x add-padding-bottom-4x hidden">
-                                                <i class="fw fw-settings fw-spin fw-2x"></i>&nbsp;&nbsp;Loading Policy
+                                                <i class="fw fw-settings fw-spin fw-2x"></i>Loading Policy
                                                 Compliance...
                                             </div>
                                             <div id="policy-list-container">
@@ -364,7 +362,7 @@
                                                 <div id="map-error" class="message message-warning">
                                                     <h4 class="remove-margin">
                                                         <i class="icon fw fw-warning"></i>
-                                                        &nbsp;Device location information is not available.
+                                                        Device location information is not available.
                                                     </h4>
                                                 </div>
                                                 <p class="add-padding-5x"></p>
@@ -388,7 +386,7 @@
                                     </div>
                                     <div class="panel-heading display-none-xs">
                                         Installed Applications
-                                        &nbsp;&nbsp;
+
                                         <span>
                             <a href="javascript:void(0);" id="refresh-apps">
                                 <i class="fw fw-refresh"></i>
