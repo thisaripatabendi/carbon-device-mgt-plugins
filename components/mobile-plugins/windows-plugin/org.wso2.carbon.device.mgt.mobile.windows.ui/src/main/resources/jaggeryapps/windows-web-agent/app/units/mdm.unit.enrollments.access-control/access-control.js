@@ -27,13 +27,11 @@ function onRequest(context) {
     var userAgent = request.getHeader("User-Agent");
     parser.setUA(userAgent);
     parser.getResult();
+
     var userAgentPlatform = parser.getOS()["name"];
 
-    if (userAgentPlatform != context.unit.params["allowedPlatform"]) {
-        // if userAgentPlatform is not allowed
-        log.error("platform not allowed");
-        response.sendRedirect(context.app.context + "/enrollments/error/unintentional-request");
-    } else {
+    if (context.unit.params["allowedPlatform"].indexOf(userAgentPlatform) !== -1){
+
         var lastPage = context.unit.params["lastPage"];
         var nextPage = context.unit.params["nextPage"];
         var currentPage = context.unit.params["currentPage"];
@@ -69,6 +67,11 @@ function onRequest(context) {
             // if currentPage is set, update lastAccessedPage as currentPage
             session.put("lastAccessedPage", currentPage);
         }
+
+    }else{
+	    // if userAgentPlatform is not allowed
+        log.error("platform not allowed");
+        response.sendRedirect(context.app.context + "/enrollments/error/unintentional-request");
     }
 
     if (log.isDebugEnabled()) {
