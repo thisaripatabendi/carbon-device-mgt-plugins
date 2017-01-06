@@ -218,6 +218,8 @@ public final class PluginConstants {
         public static final String BATTERY_CHARGE_REMAINING = "BATTERY_CHARGE_REMAINING";
         public static final String BATTERY_ESTIMATED_RUNTIME = "BATTERY_ESTIMATED_RUNTIME";
         public static final String MOBILE_ID = "MOBILE_ID";
+        public static final String LATITUDE = "LATITUDE";
+        public static final String LONGITUDE = "LONGITUDE";
 
     }
 
@@ -334,6 +336,7 @@ public final class PluginConstants {
             throw new AssertionError();
         }
         public static final String REQUESTED_WIN10_VERSION = "3.0";
+        public static final String REQUESTED_WIN10_LAPTOP_VERSION = "4.0";
         public static final String REQUESTED_WIN81_VERSION = "2.0";
     }
 

@@ -83,6 +83,21 @@ public class DiscoveryServiceImpl implements DiscoveryService {
                     ENROLLMENT_SERVICE_URL);
             discoveryResponse.setAuthenticationServiceUrl(PluginConstants.Discovery.DEVICE_ENROLLMENT_SUBDOMAIN +
                     domain + PluginConstants.Discovery.WAB_URL);
+            //windows 10 laptop - requested virsion is different - Requested-Version = 4.0
+        } else if (PluginConstants.WindowsVersionProperties.REQUESTED_WIN10_LAPTOP_VERSION.equals(discoveryRequest.getVersion()) &&
+                FEDERATED.equals(getAuthPolicy())){
+            discoveryResponse = new DiscoveryResponse();
+
+            discoveryResponse.setAuthPolicy(FEDERATED);
+            discoveryResponse.setEnrollmentVersion(PluginConstants.WindowsVersionProperties.REQUESTED_WIN10_VERSION);
+            discoveryResponse.setEnrollmentPolicyServiceUrl(PluginConstants.Discovery.DEVICE_ENROLLMENT_SUBDOMAIN +
+                    domain + PluginConstants.Discovery.
+                    CERTIFICATE_ENROLLMENT_POLICY_SERVICE_URL);
+            discoveryResponse.setEnrollmentServiceUrl(PluginConstants.Discovery.DEVICE_ENROLLMENT_SUBDOMAIN +
+                    domain + PluginConstants.Discovery.
+                    ENROLLMENT_SERVICE_URL);
+            discoveryResponse.setAuthenticationServiceUrl(PluginConstants.Discovery.DEVICE_ENROLLMENT_SUBDOMAIN +
+                    domain + PluginConstants.Discovery.WAB_URL);
         } else {
             discoveryResponse = new DiscoveryResponse();
             discoveryResponse.setAuthPolicy(FEDERATED);
