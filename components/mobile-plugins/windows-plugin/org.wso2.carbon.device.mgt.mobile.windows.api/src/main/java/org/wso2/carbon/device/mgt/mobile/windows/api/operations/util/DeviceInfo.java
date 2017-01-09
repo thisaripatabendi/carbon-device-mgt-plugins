@@ -67,7 +67,7 @@ public class DeviceInfo {
         language.setType(Operation.Type.INFO);
         deviceInfoOperations.add(language);
 
-        Operation vendor = new Operation();
+        /*Operation vendor = new Operation();
         vendor.setCode(PluginConstants.SyncML.VENDOR);
         vendor.setType(Operation.Type.INFO);
         deviceInfoOperations.add(vendor);
@@ -81,6 +81,37 @@ public class DeviceInfo {
         resolution.setCode(PluginConstants.SyncML.RESOLUTION);
         resolution.setType(Operation.Type.INFO);
         deviceInfoOperations.add(resolution);
+*/
+
+        Operation bat_status = new Operation();
+        bat_status.setCode(PluginConstants.SyncML.BATTERY_STATUS);
+        bat_status.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(bat_status);
+
+        Operation bat_runtime = new Operation();
+        bat_runtime.setCode(PluginConstants.SyncML.BATTERY_ESTIMATED_RUNTIME);
+        bat_runtime.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(bat_runtime);
+
+        Operation total_RAM = new Operation();
+        total_RAM.setCode(PluginConstants.SyncML.TOTAL_RAM);
+        total_RAM.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(total_RAM);
+
+        Operation total_storage = new Operation();
+        total_storage.setCode(PluginConstants.SyncML.TOTAL_STORAGE);
+        total_storage.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(total_storage);
+
+        Operation latitude = new Operation();
+        latitude.setCode(PluginConstants.SyncML.LATITUDE);
+        latitude.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(latitude);
+
+        Operation longitude = new Operation();
+        longitude.setCode(PluginConstants.SyncML.LONGITUDE);
+        longitude.setType(Operation.Type.INFO);
+        deviceInfoOperations.add(longitude);
 
         Operation deviceName = new Operation();
         deviceName.setCode(PluginConstants.SyncML.DEVICE_NAME);
